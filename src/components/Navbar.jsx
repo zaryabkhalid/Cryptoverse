@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { Button, Menu, Typography } from "antd"
 import logo from "../images/cryptocurrency.png"
 import { Link, useNavigate } from "react-router-dom"
@@ -11,7 +11,24 @@ import {
 import Avatar from "antd/lib/avatar/avatar"
 
 const Navbar = () => {
+  const [activeMenu, setActiveMenu] = useState(true)
+  const [screenSize, setScreenSize] = useState(null)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const handleResize = () => setScreenSize(window.innerWidth)
+
+    window.addEventListener("resize", handleResize)
+
+    handleResize()
+
+    return () => window.removeEventListener("resize", handleResize)
+  })
+
+  useEffect(() => {
+    screenSize < 768 ? setActiveMenu(false) : setActiveMenu(true)
+  }, [screenSize])
+
   return (
     <>
       <div className="nav-container">
@@ -22,27 +39,32 @@ const Navbar = () => {
               Cryptoverse
             </Link>
           </Typography.Title>
-          <Button className="menu-control-container">
+          <Button
+            className="menu-control-container"
+            onClick={() => setActiveMenu(!activeMenu)}
+          >
             <MenuOutlined />
           </Button>
         </div>
 
-        <Menu
-          onClick={({ key }) => {
-            navigate(key)
-          }}
-          items={[
-            { label: "Home", key: "/", icon: <HomeOutlined /> },
-            {
-              label: "Cryptocurrencies",
-              key: "/cryptocurrencies",
-              icon: <FundOutlined />,
-            },
+        {activeMenu && (
+          <Menu
+            theme="dark"
+            onClick={({ key }) => {
+              navigate(key)
+            }}
+            items={[
+              { label: "Home", key: "/", icon: <HomeOutlined /> },
+              {
+                label: "Cryptocurrencies",
+                key: "/cryptocurrencies",
+                icon: <FundOutlined />,
+              },
 
-            { label: "News", key: "/newspage", icon: <BulbOutlined /> },
-          ]}
-          theme="dark"
-        ></Menu>
+              { label: "News", key: "/newspage", icon: <BulbOutlined /> },
+            ]}
+          ></Menu>
+        )}
       </div>
     </>
   )
