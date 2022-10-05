@@ -54,6 +54,7 @@ const News = ({ simplified }) => {
                     {news.name}
                   </Title>
                   <img
+                    style={{ backgorundSize: "cover" }}
                     src={news?.image?.thumbnail?.contentUrl || demoUrl}
                     alt={news.name}
                   />
